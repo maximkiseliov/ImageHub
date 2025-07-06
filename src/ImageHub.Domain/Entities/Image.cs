@@ -59,9 +59,9 @@ public sealed class Image
 
     public string? GetImagePath(int? requestedHeight)
     {
-        var lookUpHeight = requestedHeight ?? OriginalHeight;
-
-        return _sizes.GetValueOrDefault(lookUpHeight.ToString());
+        return _sizes!.GetValueOrDefault(requestedHeight is null or <= 0
+            ? OriginalHeight.ToString()
+            : requestedHeight.ToString());
     }
 
     public void AddSize(string height, string path)
