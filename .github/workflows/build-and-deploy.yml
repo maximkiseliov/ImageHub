@@ -49,6 +49,11 @@ jobs:
       - name: Publish Web API
         run: dotnet publish ./src/ImageHub.Web.Api/ImageHub.Web.Api.csproj -c Release -o ./publish/webapi
 
+      - name: Copy .platform directory
+        run: |
+          mkdir -p ./publish/webapi/.platform/nginx/conf.d
+          cp -r ./src/ImageHub.Web.Api/.platform/* ./publish/webapi/.platform/
+      
       - name: Zip Web API
         run: |
           cd publish/webapi
