@@ -3,13 +3,13 @@ using ImageHub.Infrastructure;
 using ImageHub.Web.Api;
 using ImageHub.Web.Api.Constants;
 using Scalar.AspNetCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
-//TODO: Update
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-builder.Logging.AddDebug();
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.ReadFrom.Configuration(context.Configuration);
+});
 
 builder.Services
     .AddPresentation()
