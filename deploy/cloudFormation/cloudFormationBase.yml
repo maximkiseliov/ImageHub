@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ImageHub AWS resources
+
+Parameters:
+  AppName:
+    Type: String
+    Default: imagehub
+
+Resources:
+
+  ApplicationBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AppName}-app-storage"
+  
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AppName}-storage"
+
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AppName}-Images"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+
+  Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${AppName}-resize-queue"
+      VisibilityTimeout: 600
+      MessageRetentionPeriod: 345600
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt DLQ.Arn
+        maxReceiveCount: 3
+
+  DLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${AppName}-resize-dlq"
+      MessageRetentionPeriod: 345600
+      VisibilityTimeout: 120
+
+  QueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref Queue
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: SQS:SendMessage
+            Resource: !GetAtt Queue.Arn
+
+Outputs:
+  AppS3BucketName:
+    Value: !Ref ApplicationBucket
+  
+  ImageS3BucketName:
+    Value: !Ref Bucket
+  
+  SQSQueueURL:
+    Value: !Ref Queue

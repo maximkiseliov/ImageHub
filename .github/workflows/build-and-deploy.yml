@@ -1,0 +1,78 @@
+name: Build and Deploy to AWS
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - build-deploy
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.REGION }}
+
+      - name: Deploy CloudFormation stack
+        run: |
+          aws cloudformation deploy \
+            --template-file deploy/cloudformation/cloudFormationBase.yml \
+            --stack-name imagehub-base-resources \
+            --capabilities CAPABILITY_IAM \
+            --no-fail-on-empty-changeset
+
+      - name: Get CloudFormation outputs
+        id: get-cfn-outputs
+        run: |
+          echo "Getting CloudFormation outputs..."
+          APP_S3_BUCKET=$(aws cloudformation describe-stacks --stack-name imagehub-base-resources --query "Stacks[0].Outputs[?OutputKey=='AppS3BucketName'].OutputValue" --output text)
+          QUEUE_URL=$(aws cloudformation describe-stacks --stack-name imagehub-base-resources --query "Stacks[0].Outputs[?OutputKey=='SQSQueueURL'].OutputValue" --output text)
+
+          echo "APP_S3_BUCKET=$APP_S3_BUCKET" >> $GITHUB_ENV
+          echo "QUEUE_URL=$QUEUE_URL" >> $GITHUB_ENV
+
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0'
+
+      - name: Publish Web API
+        run: dotnet publish ./src/ImageHub.Web.Api/ImageHub.Web.Api.csproj -c Release -o ./publish/webapi
+
+      - name: Zip Web API
+        run: |
+          cd publish/webapi
+          zip -r ../../webapi.zip .
+
+      - name: Upload Web API zip to S3
+        run: aws s3 cp webapi.zip s3://${{ env.APP_S3_BUCKET }}/webapi.zip
+
+      - name: Publish Web Api Worker
+        run: dotnet publish ./src/ImageHub.Web.Api.Worker/ImageHub.Web.Api.Worker.csproj -c Release -o ./publish/web-api-worker
+
+      - name: Zip Web Api Worker
+        run: |
+          cd publish/web-api-worker
+          zip -r ../../web-api-worker.zip .
+
+      - name: Upload Web Worker zip to S3
+        run: aws s3 cp web-api-worker.zip s3://${{ env.APP_S3_BUCKET }}/web-api-worker.zip
+
+      - name: Deploy CloudFormation stack with EB ApplicationVersion
+        run: |
+          aws cloudformation deploy \
+            --template-file deploy/cloudformation/cloudFormationEb.yml \
+            --stack-name imagehub-eb-resources \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides ApplicationS3Bucket=${{ env.APP_S3_BUCKET }} SQSQueueURL=${{ env.QUEUE_URL }} \
+            --no-fail-on-empty-changeset
