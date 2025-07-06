@@ -21,7 +21,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ vars.REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
 
       - name: Deploy CloudFormation stack
         run: |
