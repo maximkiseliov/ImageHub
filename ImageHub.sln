@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution 
 		Directory.Build.props = Directory.Build.props
 		.gitignore = .gitignore
 		.github\workflows\build-and-deploy.yml = .github\workflows\build-and-deploy.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageHub.Infrastructure", "src\ImageHub.Infrastructure\ImageHub.Infrastructure.csproj", "{7939DFC1-A94A-472D-8D40-91E82423B82C}"
