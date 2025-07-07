@@ -18,7 +18,7 @@ public class UploadTests : BaseTest
     }
 
     [Fact]
-    public async Task Upload_WhenSucceeds_ReturnsCreatedResult()
+    public async Task Upload_ShouldReturnCreatedResult_WhenSucceeds()
     {
         // Arrange
         S3Client.PutObjectAsync(Arg.Any<PutObjectRequest>(), Arg.Any<CancellationToken>())

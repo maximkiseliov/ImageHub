@@ -16,7 +16,7 @@ public class ProcessTests : BaseTest
     }
 
     [Fact]
-    public async Task Process_WhenSucceeds_ReturnsOkResult()
+    public async Task Process_Should_ReturnsOkResult_WhenSucceeds()
     {
         // Arrange
         var imageId = Guid.NewGuid();

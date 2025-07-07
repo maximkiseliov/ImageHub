@@ -16,7 +16,7 @@ public class GetTests : BaseTest
     }
 
     [Fact]
-    public async Task Get_WhenSucceeds_ReturnsOkResult()
+    public async Task Get_ShouldReturnOkResult_WhenSucceeds()
     {
         // Arrange
         var imageId = Guid.NewGuid();
