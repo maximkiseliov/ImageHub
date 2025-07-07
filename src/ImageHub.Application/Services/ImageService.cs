@@ -183,8 +183,12 @@ public sealed class ImageService : IImageService
     private static async Task<Stream> ResizeImageAsync(Stream fileStorageStream, int targetHeight, string mimeType,
         CancellationToken ct = default)
     {
-        fileStorageStream.Seek(0, SeekOrigin.Begin);
-        using var image = await ImageSharp.LoadAsync(fileStorageStream, ct);
+        using var inputStream = new MemoryStream();
+        await fileStorageStream.CopyToAsync(inputStream, ct);
+        await fileStorageStream.DisposeAsync();
+        inputStream.Seek(0, SeekOrigin.Begin);
+        
+        using var image = await ImageSharp.LoadAsync(inputStream, ct);
 
         var ratio = (double)targetHeight / image.Height;
         var targetWidth = (int)(image.Width * ratio);
@@ -193,7 +197,6 @@ public sealed class ImageService : IImageService
 
         var outputStream = new MemoryStream();
         await image.SaveAsync(outputStream, EncoderHelper.GetEncoder(mimeType), ct);
-        await fileStorageStream.DisposeAsync();
 
         return outputStream;
     }
