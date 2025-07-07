@@ -13,11 +13,15 @@ public static class DependencyInjection
             opt.MaxRequestBodySize = WebApiConstants.MaxFileSize);
 
         services.Configure<KestrelServerOptions>(opt =>
-            opt.Limits.MaxRequestBodySize = WebApiConstants.MaxFileSize);
+        {
+            opt.Limits.MaxRequestBodySize = WebApiConstants.MaxFileSize;
+            opt.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
+            opt.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(10);
+        });
 
         services.Configure<FormOptions>(opt =>
             opt.MultipartBodyLengthLimit = WebApiConstants.MaxFileSize);
-
+        
         services.AddControllers();
 
         services.AddValidatorsFromAssemblyContaining<IWebApiMarker>();
