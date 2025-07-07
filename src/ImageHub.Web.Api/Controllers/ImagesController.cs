@@ -10,9 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImageHub.Web.Api.Controllers;
 
-// TODO:
-// 1. Think of caching strategies for images
-// 2. For large images need to implement multi part upload
 [ApiController]
 public class ImagesController : ControllerBase
 {
