@@ -31,9 +31,9 @@ public static class ValidationExtensions
     public static IRuleBuilderOptions<T, IFormFile?> ValidImageFile<T>(this IRuleBuilder<T, IFormFile?> ruleBuilder)
     {
         return ruleBuilder
-            .Must(f => f?.Length <= Constants.WebApiConstants.Validation.MaxSize)
+            .Must(f => f?.Length <= Constants.WebApiConstants.MaxFileSize)
             .WithErrorCode("InvalidFileSize")
-            .WithMessage($"Size must not exceed {Constants.WebApiConstants.Validation.MaxSize} MB")
+            .WithMessage($"Size must not exceed {Constants.WebApiConstants.MaxFileSize} MB")
             .Must(f => f?.ContentType.StartsWith("image/") == true)
             .WithErrorCode("InvalidContentType")
             .WithMessage("File must be an image.");

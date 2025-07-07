@@ -33,8 +33,9 @@ public sealed class ImageService : IImageService
 
     public async Task<Result<Guid>> ProcessImageAsync(UploadImageRequest request, CancellationToken ct = default)
     {
-        var image = await CreateImageAsync(request, request.Content, ct);
         request.Content.Seek(0, SeekOrigin.Begin);
+        using var imageSharp = await ImageSharp.LoadAsync(request.Content, ct);
+        var image = Image.Create(request.FileName, request.ContentType, request.Content.Length, imageSharp.Height);
 
         var uploadRequest = image.Map(image.OriginalHeight);
         var fileUploadResult = await _imageStorageService.UploadAsync(uploadRequest, request.Content, ct);
@@ -92,7 +93,7 @@ public sealed class ImageService : IImageService
             return Result.Failure(imageRecordResult.Error);
         }
 
-        if (request.Height > imageRecordResult.Value.OriginalHeight || request.Height <= 0)
+        if (request.Height <= 0 || request.Height > imageRecordResult.Value.OriginalHeight)
         {
             return Result.Failure(ImageErrors.InvalidHeight(request.Height));
         }
@@ -157,17 +158,15 @@ public sealed class ImageService : IImageService
 
         var resizedImageStream = await ResizeImageAsync(fileGetResult.Value, message.Body.TargetHeight,
             recordGetResult.Value.MimeType, ct);
-        await fileGetResult.Value.DisposeAsync();
 
         var uploadRequest = recordGetResult.Value.Map(message.Body.TargetHeight);
         var fileUploadResult = await _imageStorageService.UploadAsync(uploadRequest, resizedImageStream, ct);
         await resizedImageStream.DisposeAsync();
-
         if (fileUploadResult.IsFailure)
         {
             return Result.Failure(fileUploadResult.Error);
         }
-
+        
         recordGetResult.Value.AddSize(message.Body.TargetHeight.ToString(), fileUploadResult.Value);
         var recordSaveResult = await _imageRepository.SaveImageAsync(recordGetResult.Value, ct);
         if (recordSaveResult.IsFailure)
@@ -181,28 +180,20 @@ public sealed class ImageService : IImageService
         return Result.Success();
     }
 
-    private static async Task<Image> CreateImageAsync(UploadImageRequest request, Stream content, CancellationToken ct)
-    {
-        using var imageSharp = await ImageSharp.LoadAsync(content, ct);
-        return Image.Create(request.FileName, request.ContentType, content.Length, imageSharp.Height);
-    }
-
     private static async Task<Stream> ResizeImageAsync(Stream fileStorageStream, int targetHeight, string mimeType,
         CancellationToken ct = default)
     {
-        using var inputStream = new MemoryStream();
-        await fileStorageStream.CopyToAsync(inputStream, ct);
-        inputStream.Seek(0, SeekOrigin.Begin);
-
-        using var image = await ImageSharp.LoadAsync(inputStream, ct);
+        fileStorageStream.Seek(0, SeekOrigin.Begin);
+        using var image = await ImageSharp.LoadAsync(fileStorageStream, ct);
 
         var ratio = (double)targetHeight / image.Height;
         var targetWidth = (int)(image.Width * ratio);
 
         image.Mutate(op => op.Resize(targetWidth, targetHeight));
-        
+
         var outputStream = new MemoryStream();
         await image.SaveAsync(outputStream, EncoderHelper.GetEncoder(mimeType), ct);
+        await fileStorageStream.DisposeAsync();
 
         return outputStream;
     }

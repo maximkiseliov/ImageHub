@@ -32,7 +32,6 @@ public class ImagesController : ControllerBase
         _resizeImageRequestValidator = resizeImageRequestValidator;
     }
 
-    [RequestSizeLimit(WebApiConstants.Validation.MaxSize)]
     [HttpPost(WebApiConstants.ApiEndpoints.Images.Upload)]
     [ProducesResponseType<UploadImageResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]

@@ -16,15 +16,12 @@ public static class WebApiConstants
             public const string Delete = $"{Base}/{{id:guid}}";
         }
     }
-    
+
     public static class Scalar
     {
         public const string DocumentName = "v1";
         public const string Title = "Scalar UI";
     }
-    
-    public static class Validation
-    {
-        public const long MaxSize = 300 * 1024 * 1024; // Ideally everything larger than 100 mb should go through multipart upload
-    }
+
+    public const long MaxFileSize = 300 * 1024 * 1024;
 }
