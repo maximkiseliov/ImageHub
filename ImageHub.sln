@@ -28,6 +28,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{E098ED
 		deploy\cloudFormation\cloudFormationEb.yml = deploy\cloudFormation\cloudFormationEb.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageHub.Application.Tests", "tests\ImageHub.Application.Tests\ImageHub.Application.Tests.csproj", "{9F84FD8D-DF55-42C4-89B7-916A1D7586DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageHub.Tests.Shared", "tests\ImageHub.Tests.Shared\ImageHub.Tests.Shared.csproj", "{88D00889-766A-442F-9886-28CB1BADC4C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageHub.Infrastructure.Tests", "tests\ImageHub.Infrastructure.Tests\ImageHub.Infrastructure.Tests.csproj", "{62C629F9-B56D-4208-A798-CB97DDDAF3A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +60,18 @@ Global
 		{F972DFB5-483B-43FF-9615-59820E4A9F6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F972DFB5-483B-43FF-9615-59820E4A9F6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F972DFB5-483B-43FF-9615-59820E4A9F6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F84FD8D-DF55-42C4-89B7-916A1D7586DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F84FD8D-DF55-42C4-89B7-916A1D7586DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F84FD8D-DF55-42C4-89B7-916A1D7586DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F84FD8D-DF55-42C4-89B7-916A1D7586DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88D00889-766A-442F-9886-28CB1BADC4C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88D00889-766A-442F-9886-28CB1BADC4C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88D00889-766A-442F-9886-28CB1BADC4C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88D00889-766A-442F-9886-28CB1BADC4C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62C629F9-B56D-4208-A798-CB97DDDAF3A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62C629F9-B56D-4208-A798-CB97DDDAF3A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62C629F9-B56D-4208-A798-CB97DDDAF3A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62C629F9-B56D-4208-A798-CB97DDDAF3A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{354C4D31-9B1E-49EE-976E-713A3317CD26} = {CAF07B6B-A750-48F7-8043-A8698419BE2A}
@@ -61,5 +79,8 @@ Global
 		{7939DFC1-A94A-472D-8D40-91E82423B82C} = {CAF07B6B-A750-48F7-8043-A8698419BE2A}
 		{3D4F5F2B-57EE-4E21-9039-3BEA0795AE6D} = {CAF07B6B-A750-48F7-8043-A8698419BE2A}
 		{F972DFB5-483B-43FF-9615-59820E4A9F6A} = {CAF07B6B-A750-48F7-8043-A8698419BE2A}
+		{9F84FD8D-DF55-42C4-89B7-916A1D7586DA} = {7FEB1010-B414-4824-8C4E-20C9CB125655}
+		{88D00889-766A-442F-9886-28CB1BADC4C8} = {7FEB1010-B414-4824-8C4E-20C9CB125655}
+		{62C629F9-B56D-4208-A798-CB97DDDAF3A0} = {7FEB1010-B414-4824-8C4E-20C9CB125655}
 	EndGlobalSection
 EndGlobal

@@ -9,7 +9,7 @@ public static class StorageKeyHelper
 
     public static string GetKey(Guid id, string fileName, int height)
     {
-        var normalizedFileName = InvalidCharsRegex.Replace(fileName, "_");
+        var normalizedFileName = string.IsNullOrWhiteSpace(fileName) ? "_" : InvalidCharsRegex.Replace(fileName, "_");
         return string.Format(ApplicationConstants.KeyFormat, id, height, normalizedFileName);
     }
 }

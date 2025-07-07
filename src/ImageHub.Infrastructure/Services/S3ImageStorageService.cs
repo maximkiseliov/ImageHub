@@ -141,7 +141,7 @@ public sealed class S3ImageStorageService : IImageStorageService
         }
         catch (AmazonS3Exception ex)
         {
-            _logger.LogError(ex, "Failed to delete images '{Key}'", key);
+            _logger.LogError(ex, "Failed to delete images '{Key}' recursively", key);
             return Result.Failure(ImageErrors.FileDeletionFailed(key));
         }
     }
