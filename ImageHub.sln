@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution 
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 		.gitignore = .gitignore
+		.github\workflows\build-and-deploy.yml = .github\workflows\build-and-deploy.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageHub.Infrastructure", "src\ImageHub.Infrastructure\ImageHub.Infrastructure.csproj", "{7939DFC1-A94A-472D-8D40-91E82423B82C}"
@@ -19,6 +21,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageHub.Web.Api", "src\ImageHub.Web.Api\ImageHub.Web.Api.csproj", "{3D4F5F2B-57EE-4E21-9039-3BEA0795AE6D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageHub.Web.Api.Worker", "src\ImageHub.Web.Api.Worker\ImageHub.Web.Api.Worker.csproj", "{F972DFB5-483B-43FF-9615-59820E4A9F6A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{E098ED32-59D9-4DB0-9FA7-5FCF31F8967E}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\cloudFormation\cloudFormationBase.yml = deploy\cloudFormation\cloudFormationBase.yml
+		deploy\cloudFormation\cloudFormationEb.yml = deploy\cloudFormation\cloudFormationEb.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

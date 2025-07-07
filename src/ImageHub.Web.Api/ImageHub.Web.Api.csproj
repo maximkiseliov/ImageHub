@@ -11,4 +11,12 @@
         <ProjectReference Include="..\ImageHub.Infrastructure\ImageHub.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include=".platform\00_myconf.config" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include=".platform\nginx\conf.d\proxy.conf" />
+    </ItemGroup>
+
 </Project>

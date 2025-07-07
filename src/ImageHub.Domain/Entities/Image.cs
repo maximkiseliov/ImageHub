@@ -5,8 +5,8 @@ public sealed class Image
     private Image() { }
     
     public Guid Id { get; private init; }
-    public string OriginalFileName { get; private init; }
-    public string MimeType { get; private init; }
+    public string OriginalFileName { get; private init; } = null!;
+    public string MimeType { get; private init; } = null!;
     public long SizeInBytes { get; private init; }
     public int OriginalHeight { get; private init; }
     public DateTime CreatedAt { get; private init; }

@@ -1,0 +1,139 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ImageHub AWS EB resources
+
+Parameters:
+  AppName:
+    Type: String
+    Default: imagehub
+  
+  ApplicationS3Bucket:
+    Type: String
+  
+  SQSQueueURL:
+    Type: String
+
+Resources:
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: !Sub "${AppName}-InstanceProfile"
+      Roles:
+        - !Ref InstanceRole
+
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${AppName}-InstanceRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonSQSFullAccess
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+  
+  Application:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      ApplicationName: !Sub "${AppName}-app"
+  
+  WebApiApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      ApplicationName: !Ref Application
+      Description: WebApi application version
+      SourceBundle:
+        S3Bucket: !Ref ApplicationS3Bucket
+        S3Key: "webapi.zip"
+
+  WebApiEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      EnvironmentName: production-webapi
+      ApplicationName: !Ref Application
+      VersionLabel: !Ref WebApiApplicationVersion
+      SolutionStackName: "64bit Amazon Linux 2023 v3.5.0 running .NET 9"
+      OptionSettings:
+        - Namespace: aws:autoscaling:asg
+          OptionName: MinSize
+          Value: '1'
+        - Namespace: aws:autoscaling:asg
+          OptionName: MaxSize
+          Value: '1'
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: SingleInstance
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref InstanceProfile
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: RootVolumeType
+          Value: gp3
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: DisableIMDSv1
+          Value: true
+
+  WebApiWorkerApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      ApplicationName: !Ref Application
+      Description: Web Api Worker application version
+      SourceBundle:
+        S3Bucket: !Ref ApplicationS3Bucket
+        S3Key: "web-api-worker.zip"
+
+  WebApiWorkerEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      EnvironmentName: production-web-api-worker
+      ApplicationName: !Ref Application
+      VersionLabel: !Ref WebApiWorkerApplicationVersion
+      SolutionStackName: "64bit Amazon Linux 2023 v3.5.0 running .NET 9"
+      Tier:
+        Name: Worker
+        Type: SQS/HTTP
+      OptionSettings:
+        - Namespace: aws:autoscaling:asg
+          OptionName: MinSize
+          Value: '1'
+        - Namespace: aws:autoscaling:asg
+          OptionName: MaxSize
+          Value: '1'
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: SingleInstance
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref InstanceProfile
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: RootVolumeType
+          Value: gp3
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: DisableIMDSv1
+          Value: true
+        - Namespace: aws:elasticbeanstalk:sqsd
+          OptionName: WorkerQueueURL
+          Value: !Ref SQSQueueURL
+        - Namespace: aws:elasticbeanstalk:sqsd
+          OptionName: HttpPath
+          Value: /process
+        - Namespace: aws:elasticbeanstalk:sqsd
+          OptionName: InactivityTimeout
+          Value: '300'
+        - Namespace: aws:elasticbeanstalk:sqsd
+          OptionName: VisibilityTimeout
+          Value: '600'
+        - Namespace: aws:elasticbeanstalk:sqsd
+          OptionName: RetentionPeriod
+          Value: '345600'
+        - Namespace: aws:elasticbeanstalk:sqsd
+          OptionName: MaxRetries
+          Value: '3'
+        - Namespace: aws:elasticbeanstalk:sqsd
+          OptionName: HttpConnections
+          Value: '10'
