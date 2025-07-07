@@ -4,11 +4,11 @@ A cloud-based image storage and processing service built with .NET.
 
 ## Project Overview
 
-ImageHub is a web API for uploading, retrieving, resizing, and managing images. Images are stored in AWS S3 and the application is deployed on AWS Elastic Beanstalk.
+ImageHub is a web API for uploading, retrieving, resizing, and managing images. Images are stored in AWS S3, and the application is deployed on AWS Elastic Beanstalk.
 
 ## Features
 
-- **Image Upload**: Upload images with support for large files (up to 300MB)
+- **Image Upload**: Upload images
 - **Image Retrieval**: Get images by ID
 - **Image Resizing**: Resize images to specific dimensions
 - **Image Deletion**: Remove images from storage
@@ -52,9 +52,9 @@ All endpoints are under the `api/images` base path:
 
 ## Configuration
 
-### File Upload Limits
+### AWS
 
-The application supports file uploads up to 300MB
+`aws configure`
 
 ### Logging
 

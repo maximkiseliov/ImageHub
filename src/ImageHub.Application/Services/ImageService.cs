@@ -142,6 +142,14 @@ public sealed class ImageService : IImageService
         {
             return Result.Failure<string>(recordGetResult.Error);
         }
+        
+        // This should not happen, but just in case
+        if (!string.IsNullOrWhiteSpace(recordGetResult.Value.GetImagePath(message.Body.TargetHeight)))
+        {
+            _logger.LogInformation("Image '{ImageId}' is already exists in height '{Height}' px",
+                recordGetResult.Value.Id, message.Body.TargetHeight);
+            return Result.Success();
+        }
 
         var originalImagePath = recordGetResult.Value.GetImagePath(recordGetResult.Value.OriginalHeight);
         if (string.IsNullOrWhiteSpace(originalImagePath))
