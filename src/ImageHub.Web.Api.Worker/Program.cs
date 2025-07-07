@@ -23,3 +23,6 @@ builder.Services
 var app = builder.Build();
 app.MapControllers();
 app.Run();
+
+// Used in TestWebAppFactory
+public partial class Program;
