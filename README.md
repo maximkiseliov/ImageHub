@@ -101,6 +101,7 @@ Run `aws configure` to set up your credentials.
    AWS_DEFAULT_REGION=your_region
    S3_BUCKET_NAME=your-bucket-name
    SQS_RESIZE_QUEUE_URL=your_sqs_queue_url
+   DYNAMODB_TABLE_NAME_PREFIX=imagehub-local-
    ```
    
 3. *Build and Run Docker Containers*

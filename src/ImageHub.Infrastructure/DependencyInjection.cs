@@ -34,8 +34,12 @@ public static class DependencyInjection
         services.AddSingleton<IDynamoDBContext>(sp =>
         {
             var client = sp.GetRequiredService<IAmazonDynamoDB>();
-
+            
             return new DynamoDBContextBuilder()
+                .ConfigureContext(opt =>
+                {
+                    opt.TableNamePrefix = configuration.GetSection(InfrastructureConstants.Config.Aws.DynamoDb.TableNamePrefix).Value;
+                })
                 .WithDynamoDBClient(() => client)
                 .Build();
         });

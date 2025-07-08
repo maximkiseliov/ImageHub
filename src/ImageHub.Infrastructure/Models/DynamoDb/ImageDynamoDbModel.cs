@@ -2,7 +2,7 @@ using Amazon.DynamoDBv2.DataModel;
 
 namespace ImageHub.Infrastructure.Models.DynamoDb;
 
-[DynamoDBTable("imagehub-Images")]
+[DynamoDBTable("Images")]
 public sealed class ImageDynamoDbModel
 {
     [DynamoDBHashKey]
