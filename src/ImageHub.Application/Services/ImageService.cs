@@ -64,7 +64,6 @@ public sealed class ImageService : IImageService
         return Result.Success(image.Id);
     }
 
-    // TODO: Think about caching
     public async Task<Result<string>> GetImageAsync(GetImageRequest request, CancellationToken ct = default)
     {
         var imageRecordResult = await _imageRepository.GetImageAsync(request.Id, ct);
@@ -98,7 +97,7 @@ public sealed class ImageService : IImageService
             return Result.Failure(ImageErrors.InvalidHeight(request.Height));
         }
 
-        if (!string.IsNullOrWhiteSpace(imageRecordResult.Value.GetImagePath(request.Height)))
+        if (imageRecordResult.Value.Sizes.ContainsKey(request.Height.ToString()))
         {
             _logger.LogInformation("Image '{ImageId}' is already exists in height '{Height}' px",
                 imageRecordResult.Value.Id, request.Height);
@@ -142,9 +141,9 @@ public sealed class ImageService : IImageService
         {
             return Result.Failure<string>(recordGetResult.Error);
         }
-        
+
         // This should not happen, but just in case
-        if (!string.IsNullOrWhiteSpace(recordGetResult.Value.GetImagePath(message.Body.TargetHeight)))
+        if (recordGetResult.Value.Sizes.ContainsKey(message.Body.TargetHeight.ToString()))
         {
             _logger.LogInformation("Image '{ImageId}' is already exists in height '{Height}' px",
                 recordGetResult.Value.Id, message.Body.TargetHeight);
@@ -174,7 +173,7 @@ public sealed class ImageService : IImageService
         {
             return Result.Failure(fileUploadResult.Error);
         }
-        
+
         recordGetResult.Value.AddSize(message.Body.TargetHeight.ToString(), fileUploadResult.Value);
         var recordSaveResult = await _imageRepository.SaveImageAsync(recordGetResult.Value, ct);
         if (recordSaveResult.IsFailure)
@@ -195,7 +194,7 @@ public sealed class ImageService : IImageService
         await fileStorageStream.CopyToAsync(inputStream, ct);
         await fileStorageStream.DisposeAsync();
         inputStream.Seek(0, SeekOrigin.Begin);
-        
+
         using var image = await ImageSharp.LoadAsync(inputStream, ct);
 
         var ratio = (double)targetHeight / image.Height;

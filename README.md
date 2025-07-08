@@ -23,6 +23,14 @@ ImageHub is a web API for uploading, retrieving, resizing, and managing images. 
 - **ImageHub.Web.Api**: REST API endpoints and controllers
 - **ImageHub.Web.Api.Worker**: Background processing jobs for image operations
 
+### Test Projects
+
+- **ImageHub.Tests.Shared**: Common testing utilities and fixtures
+- **ImageHub.Application.Tests**: Tests for application layer
+- **ImageHub.Infrastructure.Tests**: Tests for infrastructure layer
+- **ImageHub.Web.Api.Tests**: Tests for web API
+- **ImageHub.Web.Api.Worker.Tests**: Tests for worker service
+
 ## Technical Stack
 
 - **Backend**: ASP.NET Core
@@ -67,4 +75,8 @@ The project is deployed using CloudFormation templates located in the `deploy/cl
 - `cloudFormationBase.yml` - Base infrastructure setup (S3, DynamoDB, SQS)
 - `cloudFormationEb.yml` - Elastic Beanstalk environment configuration
 
-CI/CD is handled through GitHub Actions defined in `.github/workflows/build-and-deploy.yml`.
+## CI/CD Pipeline
+
+The project uses GitHub Actions for continuous integration and deployment:
+- `.github/workflows/build-and-test.yml` - Builds and tests the application
+- `.github/workflows/deploy-to-aws.yml` - Deploys the application to AWS
