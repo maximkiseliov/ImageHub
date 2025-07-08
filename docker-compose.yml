@@ -1,0 +1,44 @@
+services:
+  web.api:
+    image: webapi
+    container_name: web.api
+    build:
+      context: .
+      dockerfile: webapi.dockerfile
+    restart: always
+    environment:
+      - ASPNETCORE_HTTP_PORTS=5001
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+      - AWS__S3__BucketName=${S3_BUCKET_NAME}
+      - AWS__Sqs__ResizeQueueUrl= ${SQS_RESIZE_QUEUE_URL}
+    networks:
+      - web-network
+    ports:
+      - "5001:5001"
+
+  webapi.worker:
+    image: webapiworker
+    container_name: webapi.worker
+    build:
+      context: .
+      dockerfile: webapiworker.dockerfile
+    restart: always
+    environment:
+      - ASPNETCORE_HTTP_PORTS=5002
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+      - AWS__S3__BucketName=${S3_BUCKET_NAME}
+      - AWS__Sqs__ResizeQueueUrl= ${SQS_RESIZE_QUEUE_URL}
+    networks:
+      - web-network
+    ports:
+      - "5002:5002"
+networks:
+  web-network:
+    name: web-network
+    driver: bridge
