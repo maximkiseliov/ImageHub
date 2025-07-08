@@ -15,6 +15,11 @@ public static class InfrastructureConstants
             {
                 public const string SectionName = "AWS:Sqs";
             }
+            
+            public static class DynamoDb
+            {
+                public const string TableNamePrefix = "AWS:DynamoDb:TableNamePrefix";
+            }
         }
     }
 }

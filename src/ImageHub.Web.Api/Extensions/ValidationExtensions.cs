@@ -4,14 +4,6 @@ namespace ImageHub.Web.Api.Extensions;
 
 public static class ValidationExtensions
 {
-    public static IRuleBuilderOptions<T, string?> Required<T>(this IRuleBuilder<T, string?> ruleBuilder)
-    {
-        return ruleBuilder
-            .NotEmpty()
-            .WithErrorCode("Required")
-            .WithMessage("{PropertyName} is required");
-    }
-    
     public static IRuleBuilderOptions<T, int?> Required<T>(this IRuleBuilder<T, int?> ruleBuilder)
     {
         return ruleBuilder
