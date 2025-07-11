@@ -17,22 +17,17 @@ builder.Services
     .AddApplication();
 
 var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+app.MapOpenApi();
+app.MapScalarApiReference(opt =>
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference(opt =>
-    {
-        opt
-            .WithTitle(WebApiConstants.Scalar.Title)
-            .WithTheme(ScalarTheme.Moon)
-            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
-            .WithDarkMode();
-    });
-}
+    opt
+        .WithTitle(WebApiConstants.Scalar.Title)
+        .WithTheme(ScalarTheme.Moon)
+        .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
+        .WithDarkMode();
+});
 
 app.MapControllers();
-
 app.Run();
 
 // Used in TestWebAppFactory
